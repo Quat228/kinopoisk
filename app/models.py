@@ -52,7 +52,7 @@ class Genre(models.Model):
 
 
 class Person(models.Model):
-    photo = models.ImageField()
+    photo = models.URLField()
     name = models.CharField(max_length=55)
     profession = models.CharField(max_length=55)
 
