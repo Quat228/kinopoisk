@@ -12,6 +12,7 @@ class RatingSerializer(serializers.ModelSerializer):
     model = models.Rating
     fields = '__all__'
     
+    
 class GenreSerializer(serializers.ModelSerializer):
     model = models.Genre
     fields = '__all__'
