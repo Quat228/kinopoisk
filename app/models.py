@@ -39,7 +39,13 @@ class Movie(models.Model):
 class Rating(models.Model):
     movie = models.ForeignKey("Movie", related_name='ratings', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='ratings', on_delete=models.CASCADE)
-    rate = models.FloatField()
+    rate = models.FloatField(choices=[
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5)
+    ])
 
     def __str__(self):
         return f"{self.movie.name}|{self.rate}"
