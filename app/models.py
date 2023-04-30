@@ -14,6 +14,7 @@ class Movie(models.Model):
     premiere = models.DateTimeField()
     slogan = models.CharField()
     year = models.IntegerField()
+    value = models.IntegerField()
     budget = models.ForeignKey("Budget", on_delete=models.CASCADE, related_name='movies')
     poster = models.URLField()
     genres = models.ManyToManyField("Genre", related_name='movies')
