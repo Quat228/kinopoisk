@@ -45,15 +45,6 @@ class Rating(models.Model):
         return f"{self.movie.name}|{self.rate}"
 
 
-class Company(models.Model):
-    name = models.CharField(max_length=45)
-    url = models.URLField()
-    preview_url = models.URLField(null=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Genre(models.Model):
     name = models.CharField(max_length=25)
 
