@@ -8,7 +8,6 @@ User = get_user_model()
 class Movie(models.Model):
     backdrop = models.URLField()
     movie_length = models.IntegerField()
-    companies = models.ManyToManyField("Company", related_name='movies')
     type = models.CharField(max_length=30)
     name = models.CharField()
     description = models.TextField()
