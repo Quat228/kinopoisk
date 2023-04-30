@@ -1,4 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.db import models
+
+
+User = get_user_model()
 
 
 class Movie(models.Model):
@@ -8,7 +12,7 @@ class Movie(models.Model):
     type = models.CharField(max_length=30)
     name = models.CharField()
     description = models.TextField()
-    premiere = models.DateTimeField
+    premiere = models.DateTimeField()
     slogan = models.CharField()
     year = models.IntegerField()
     budget = models.ForeignKey("Budget", on_delete=models.CASCADE, related_name='movies')
@@ -20,8 +24,25 @@ class Movie(models.Model):
     top10 = models.BooleanField(null=True)
     top250 = models.BooleanField(null=True)
 
+    def get_rating(self):
+        queryset = self.ratings.all()
+        rate = []
+        for obj in queryset:
+            rate.append(obj.rate)
+
+        return sum(rate) / len(rate)
+
     def __str__(self):
         return self.name
+
+
+class Rating(models.Model):
+    movie = models.ForeignKey("Movie", related_name='ratings', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='ratings', on_delete=models.CASCADE)
+    rate = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.movie.name}|{self.rate}"
 
 
 class Company(models.Model):
