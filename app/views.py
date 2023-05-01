@@ -1,4 +1,8 @@
 from rest_framework import generics
+from rest_framework import views
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
 
 from . import models
 from . import serializers
@@ -9,21 +13,41 @@ class MovieListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = serializers.MovieSerializer
 
 
-class RatingListCreateAPIView(generics.ListCreateAPIView):
+class RatingListAPIView(generics.ListAPIView):
     queryset = models.Rating.objects.all()
     serializer_class = serializers.RatingSerializer
 
 
-class GenreListCreateAPIView(generics.ListCreateAPIView):
+class GenreListAPIView(generics.ListAPIView):
     queryset = models.Genre.objects.all()
     serializer_class = serializers.GenreSerializer
 
 
-class PersonListCreateAPIView(generics.ListCreateAPIView):
+class PersonListAPIView(generics.ListAPIView):
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
 
 
-class BudgetListCreateAPIView(generics.ListCreateAPIView):
-    queryset = models.Budget.objects.all()
-    serializer_class = serializers.BudgetSerializer
+class CurrencyListAPIView(generics.ListAPIView):
+    queryset = models.Currency.objects.all()
+    serializer_class = serializers.CurrencySerializer
+
+
+class MovieRetrieveUpdateDestroyAPIView(views.APIView):
+    def get_object(self, pk):
+        return get_object_or_404(models.Movie, pk=pk)
+
+    def get(self, request, pk, *args, **kwargs):
+        serializer = serializers.MovieSerializer(instance=self.get_object(pk))
+        return Response(serializer.data)
+
+    def put(self, request, pk, *args, **kwargs):
+        serializer = serializers.MovieSerializer(instance=self.get_object(pk), data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request, pk, *args, **kwargs):
+        self.get_object(pk).delete()
+        return Response(status=204)
