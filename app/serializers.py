@@ -27,7 +27,7 @@ class PersonSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class BudgetSerializer(serializers.ModelSerializer):
+class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Budget
+        model = models.Currency
         fields = '__all__'

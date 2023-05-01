@@ -14,8 +14,8 @@ class Movie(models.Model):
     premiere = models.DateTimeField()
     slogan = models.CharField(null=True)
     year = models.IntegerField()
-    value = models.IntegerField(default=0)
-    budget = models.ForeignKey("Budget", on_delete=models.CASCADE, related_name='movies')
+    budget = models.IntegerField(default=0)
+    currency = models.ForeignKey("Currency", on_delete=models.CASCADE, related_name='movies')
     poster = models.URLField()
     genres = models.ManyToManyField("Genre", related_name='movies')
     trailer_url = models.URLField()
@@ -26,11 +26,11 @@ class Movie(models.Model):
 
     def get_rating(self):
         queryset = self.ratings.all()
-        rate = []
+        rates = []
         for obj in queryset:
-            rate.append(obj.rate)
+            rates.append(obj.rate)
 
-        return sum(rate) / len(rate)
+        return sum(rates) / len(rates)
 
     def __str__(self):
         return self.name
@@ -48,7 +48,7 @@ class Rating(models.Model):
     ])
 
     def __str__(self):
-        return f"{self.movie.name}|{self.rate}"
+        return f"{self.movie.name} | {self.rate} | {self.user}"
 
 
 class Genre(models.Model):
@@ -67,9 +67,9 @@ class Person(models.Model):
         return self.name
 
 
-class Budget(models.Model):
-    currency = models.CharField(max_length=10)
+class Currency(models.Model):
+    name = models.CharField(max_length=10)
 
     def __str__(self):
-        return self.currency
+        return self.name
         

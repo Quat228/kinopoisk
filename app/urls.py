@@ -5,8 +5,10 @@ from . import views
 
 urlpatterns = [
     path('movies/', views.MovieListCreateAPIView.as_view()),
-    path('ratings/', views.RatingListCreateAPIView.as_view()),
-    path('genres/', views.GenreListCreateAPIView.as_view()),
-    path('persons/', views.PersonListCreateAPIView.as_view()),
-    path('budgets/', views.BudgetListCreateAPIView.as_view()),
+    path('ratings/', views.RatingListAPIView.as_view()),
+    path('genres/', views.GenreListAPIView.as_view()),
+    path('persons/', views.PersonListAPIView.as_view()),
+    path('budgets/', views.CurrencyListAPIView.as_view()),
+
+    path('movies/<int:pk>', views.MovieRetrieveUpdateDestroyAPIView.as_view()),
 ]
