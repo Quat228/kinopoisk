@@ -4,6 +4,8 @@ from . import models
 
 
 class MovieSerializer(serializers.ModelSerializer):
+    rating = serializers.ReadOnlyField(source='get_rating')
+
     class Meta:
         model = models.Movie
         fields = '__all__'
@@ -13,8 +15,8 @@ class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Rating
         fields = '__all__'
-    
-    
+
+
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Genre

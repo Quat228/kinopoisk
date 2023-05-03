@@ -30,7 +30,7 @@ class Movie(models.Model):
         for obj in queryset:
             rates.append(obj.rate)
 
-        return sum(rates) / len(rates)
+        return sum(rates) / len(rates) if rates else 0.0
 
     def __str__(self):
         return self.name
