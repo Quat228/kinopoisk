@@ -5,7 +5,7 @@ from django.db import models
 User = get_user_model()
 
 
-class Movie(models.Model):
+class FilmWork(models.Model):
     backdrop = models.URLField()
     movie_length = models.IntegerField()
     type = models.CharField(max_length=30)
@@ -15,11 +15,11 @@ class Movie(models.Model):
     slogan = models.CharField(null=True)
     year = models.IntegerField()
     budget = models.IntegerField(default=0)
-    currency = models.ForeignKey("Currency", on_delete=models.CASCADE, related_name='movies')
+    currency = models.ForeignKey("Currency", on_delete=models.CASCADE, related_name='film_works')
     poster = models.URLField()
-    genres = models.ManyToManyField("Genre", related_name='movies')
+    genres = models.ManyToManyField("Genre", related_name='film_works')
     trailer_url = models.URLField()
-    persons = models.ManyToManyField("Person", related_name='movies')
+    persons = models.ManyToManyField("Person", related_name='film_works')
     age_rating = models.IntegerField(default=18)
     top10 = models.BooleanField(null=True)
     top250 = models.BooleanField(null=True)
@@ -37,7 +37,7 @@ class Movie(models.Model):
 
 
 class Rating(models.Model):
-    movie = models.ForeignKey("Movie", related_name='ratings', on_delete=models.CASCADE)
+    film_work = models.ForeignKey("FilmWork", related_name='ratings', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='ratings', on_delete=models.CASCADE)
     rate = models.FloatField(choices=[
         (1, 1),
@@ -48,7 +48,7 @@ class Rating(models.Model):
     ])
 
     def __str__(self):
-        return f"{self.movie.name} | {self.rate} | {self.user}"
+        return f"{self.film_work.name} | {self.rate} | {self.user}"
 
 
 class Genre(models.Model):
