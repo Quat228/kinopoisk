@@ -8,9 +8,9 @@ from . import models
 from . import serializers
 
 
-class MovieListCreateAPIView(generics.ListAPIView):
-    queryset = models.Movie.objects.all()
-    serializer_class = serializers.MovieSerializer
+class FilmWorkListCreateAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.all()
+    serializer_class = serializers.FilmWorkSerializer
 
 
 class RatingListAPIView(generics.ListAPIView):
@@ -33,16 +33,16 @@ class CurrencyListAPIView(generics.ListAPIView):
     serializer_class = serializers.CurrencySerializer
 
 
-class MovieRetrieveUpdateDestroyAPIView(views.APIView):
+class FilmWorkRetrieveUpdateDestroyAPIView(views.APIView):
     def get_object(self, pk):
-        return get_object_or_404(models.Movie, pk=pk)
+        return get_object_or_404(models.FilmWork, pk=pk)
 
     def get(self, request, pk, *args, **kwargs):
-        serializer = serializers.MovieSerializer(instance=self.get_object(pk))
+        serializer = serializers.FilmWorkSerializer(instance=self.get_object(pk))
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        serializer = serializers.MovieSerializer(instance=self.get_object(pk), data=request.data)
+        serializer = serializers.FilmWorkSerializer(instance=self.get_object(pk), data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
