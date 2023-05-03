@@ -3,11 +3,11 @@ from rest_framework import serializers
 from . import models
 
 
-class MovieSerializer(serializers.ModelSerializer):
+class FilmWorkSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField(source='get_rating')
 
     class Meta:
-        model = models.Movie
+        model = models.FilmWork
         fields = '__all__'
 
 
