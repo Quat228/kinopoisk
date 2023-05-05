@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-
-User = get_user_model()
+from accounts.models import Profile
 
 
 class FilmWork(models.Model):
@@ -38,7 +37,7 @@ class FilmWork(models.Model):
 
 class Rating(models.Model):
     film_work = models.ForeignKey("FilmWork", related_name='ratings', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, related_name='ratings', on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, related_name='ratings', on_delete=models.CASCADE)
     rate = models.FloatField(choices=[
         (1, 1),
         (2, 2),
