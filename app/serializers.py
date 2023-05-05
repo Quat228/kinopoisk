@@ -3,14 +3,6 @@ from rest_framework import serializers
 from . import models
 
 
-class FilmWorkSerializer(serializers.ModelSerializer):
-    rating = serializers.ReadOnlyField(source='get_rating')
-
-    class Meta:
-        model = models.FilmWork
-        fields = '__all__'
-
-
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Rating
@@ -32,4 +24,15 @@ class PersonSerializer(serializers.ModelSerializer):
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Currency
+        fields = '__all__'
+
+
+class FilmWorkSerializer(serializers.ModelSerializer):
+    rating = serializers.ReadOnlyField(source='get_rating')
+    genres = GenreSerializer(many=True)
+    persons = PersonSerializer(many=True)
+    currency = CurrencySerializer()
+
+    class Meta:
+        model = models.FilmWork
         fields = '__all__'

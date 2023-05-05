@@ -6,9 +6,10 @@ from app import models
 
 received_data_json = requests.get('https://api.kinopoisk.dev/v1.3/movie?selectFields=backdrop%20movieLength'
                                   '%20type%20name%20description%20premiere.world%20slogan%20year%20budget'
-                                  '%20poster%20genres%20videos.trailers%20persons'
-                                  '%20ageRating&page=1&limit=1&type=movie&typeNumber=1&year=1990-2030&poster.url='
-                                  '%21null&backdrop.url=%21null&videos.trailers.site=youtube',
+                                  '%20poster%20genres%20videos.trailers%20persons%20ageRating&page=9&limit=50'
+                                  '&type=movie&typeNumber=1&year=1990-2030&poster.url=%21null&backdrop.url='
+                                  '%21null&videos.trailers.site=youtube&budget.value=%21null&budget.currency='
+                                  '%21null',
                                   headers={
                                       "X-API-KEY": "3JE8DNH-8VX416N-KWCW970-FE19HE4"
                                   }
@@ -53,7 +54,10 @@ for movie_dict in received_data_python:
     list_person_objects = []
     try:
         # - Добавления валюты
-        currency = create_and_get_object(models.Currency, movie_dict['budget']['currency'])
+        if movie_dict['budget']['currency'] and movie_dict['budget']['value']:
+            currency = create_and_get_object(models.Currency, movie_dict['budget']['currency'])
+        else:
+            raise f'Ошибка нет Budget или Currency'
         # - Добавление жанра
         for genre_dict in movie_dict['genres']:
             genre = create_and_get_object(models.Genre, genre_dict['name'])
@@ -81,7 +85,7 @@ for movie_dict in received_data_python:
             slogan=movie_dict['slogan'],
             year=movie_dict['year'],
             budget=movie_dict['budget']['value'],
-            currency=c1,
+            currency=currency,
             poster=movie_dict['poster']['url'],
             trailer_url=movie_dict['videos']['trailers'][0]['url'],
             age_rating=movie_dict['ageRating']
