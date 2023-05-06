@@ -6,10 +6,10 @@ from app import models
 
 received_data_json = requests.get('https://api.kinopoisk.dev/v1.3/movie?selectFields=backdrop%20movieLength'
                                   '%20type%20name%20description%20premiere.world%20slogan%20year%20budget'
-                                  '%20poster%20genres%20videos.trailers%20persons%20ageRating&page=9&limit=50'
-                                  '&type=movie&typeNumber=1&year=1990-2030&poster.url=%21null&backdrop.url='
-                                  '%21null&videos.trailers.site=youtube&budget.value=%21null&budget.currency='
-                                  '%21null',
+                                  '%20poster%20genres%20videos.trailers%20persons%20ageRating&page=100&limit=10'
+                                  '&year=1990-2030&poster.url=%21null&backdrop.url=%21null'
+                                  '&videos.trailers.site=youtube&videos.trailers.type=TRAILER&budget.value='
+                                  '%21null&budget.currency=%21null',
                                   headers={
                                       "X-API-KEY": "3JE8DNH-8VX416N-KWCW970-FE19HE4"
                                   }
@@ -18,6 +18,8 @@ received_data_json = requests.get('https://api.kinopoisk.dev/v1.3/movie?selectFi
 received_data_python = json.loads(received_data_json.text)['docs']
 
 exist_movies = []
+
+without_trailer_movies = []
 
 skipped_movies = []
 
@@ -47,6 +49,20 @@ for movie_dict in received_data_python:
     if movie_dict['name'] in get_query_names(models.FilmWork):
         exist_movies.append(f"{movie_dict['name']}")
         print(f"Movie {movie_dict['name']} is already exist")
+        continue
+    # -- Проверка на наличие адекватного трейлера
+    try:
+        for trailer_dict in movie_dict['videos']['trailers']:
+            if trailer_dict['site'] == 'youtube' and trailer_dict['type'] == 'TRAILER':
+                movie_dict['videos']['trailers'] = [trailer_dict]
+                break
+        if len(movie_dict['videos']['trailers']) == 0:
+            without_trailer_movies.append((movie_dict['name']))
+            print(f"Movie {movie_dict['name']} doesn't have normal trailers")
+            continue
+    except Exception as e:
+        without_trailer_movies.append((movie_dict['name']))
+        print(f"Movie {movie_dict['name']} doesn't have normal trailers")
         continue
     # -- Добавление фильма в бд
     c1 = None
@@ -99,11 +115,18 @@ for movie_dict in received_data_python:
         print(f"Skipped filmwork {movie_dict['name']} - reason: {e}")
         skipped += 1
 
-
+print('Exist movies: ')
 print(exist_movies)
+print("--------------")
+print('Skipped movies')
 print(skipped_movies)
+print("--------------")
+print(without_trailer_movies)
+print('Without trailers')
+
 
 print(f"Approved {approved}")
 print(f"Skipped {skipped}")
+print(f'Without trailers {len(without_trailer_movies)}')
 print(f"Exist {len(exist_movies)}")
 
