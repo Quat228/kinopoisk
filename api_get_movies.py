@@ -80,7 +80,7 @@ for movie_dict in received_data_python:
             list_genre_objects.append(genre)
         # - Добавление актерского состава
         for person_dict in movie_dict['persons']:
-            if person_dict['name'] and person_dict['photo'] and person_dict['name']:
+            if person_dict['name'] and person_dict['photo'] and person_dict['profession']:
                 if person_dict['name'] in get_query_names(models.Person):
                     person = models.Person.objects.filter(name=person_dict['name']).first()
                 else:
