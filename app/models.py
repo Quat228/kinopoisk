@@ -76,6 +76,9 @@ class Currency(models.Model):
 class Comment(models.Model):
     text = models.TextField()
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    filmwork = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.text
