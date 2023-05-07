@@ -1,5 +1,3 @@
-from django.db.models import Q
-
 from rest_framework import generics
 from rest_framework import views
 from rest_framework.generics import get_object_or_404
@@ -11,8 +9,7 @@ from . import serializers
 
 class FilmWorkListAPIView(generics.ListAPIView):
     """
-    FilmWork List and Create View
-    :param limit: int
+    FilmWork List View
     """
     queryset = models.FilmWork.objects.all()
     serializer_class = serializers.FilmWorkSerializer
@@ -21,7 +18,6 @@ class FilmWorkListAPIView(generics.ListAPIView):
 class RatingListAPIView(generics.ListAPIView):
     """
     Rating List View
-    :param limit: int
     """
     queryset = models.Rating.objects.all()
     serializer_class = serializers.RatingSerializer
@@ -30,7 +26,6 @@ class RatingListAPIView(generics.ListAPIView):
 class GenreListAPIView(generics.ListAPIView):
     """
     Genre List View
-    :param limit: int
     """
     queryset = models.Genre.objects.all()
     serializer_class = serializers.GenreSerializer
@@ -39,7 +34,6 @@ class GenreListAPIView(generics.ListAPIView):
 class PersonListAPIView(generics.ListAPIView):
     """
     Person List View
-    :param limit: int
     """
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
@@ -48,7 +42,6 @@ class PersonListAPIView(generics.ListAPIView):
 class CurrencyListAPIView(generics.ListAPIView):
     """
     Currency List View
-    :param limit: int
     """
     queryset = models.Currency.objects.all()
     serializer_class = serializers.CurrencySerializer
@@ -64,36 +57,57 @@ class FilmWorkRetrieveAPIView(views.APIView):
 
 
 class FilmWorkListNewMovieAPIView(generics.ListAPIView):
+    """
+    FilmWork List of new movies
+    """
     queryset = models.FilmWork.objects.filter(type='movie').order_by('-premiere')[:14]
     serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListFamilyMovieAPIView(generics.ListAPIView):
+    """
+    FilmWork list of movie of the family genre
+    """
     queryset = models.FilmWork.objects.filter(type='movie', genres__name__exact='семейный')[:14]
     serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListHorrorMovieAPIView(generics.ListAPIView):
+    """
+    FilmWork list of movie of the horror genre
+    """
     queryset = models.FilmWork.objects.filter(type='movie', genres__name__exact='ужасы')[:14]
     serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
+    """
+    FilmWork list of new cartoon
+    """
     queryset = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')[:14]
     serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListFamilyCartoonAPIView(generics.ListAPIView):
+    """
+    FilmWork list of cartoon of the family genre
+    """
     queryset = models.FilmWork.objects.filter(type='cartoon', genres__name__exact='семейный')[:14]
     serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListHorrorCartoonAPIView(generics.ListAPIView):
+    """
+    FilmWork list of cartoon of the horror genre
+    """
     queryset = models.FilmWork.objects.filter(type='cartoon', genres__name__exact='ужасы')[:14]
     serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListMovieCartoonNew(generics.ListAPIView):
+    """
+    FilmWork list of new movie and cartoon
+    """
 
     serializer_class = serializers.FilmWorkSerializer
 
@@ -104,6 +118,9 @@ class FilmWorkListMovieCartoonNew(generics.ListAPIView):
 
 
 class FilmWorkListMovieCartoonHorror(generics.ListAPIView):
+    """
+    FilmWork list of movie and cartoon of the horror genre
+    """
 
     serializer_class = serializers.FilmWorkSerializer
 
@@ -114,6 +131,10 @@ class FilmWorkListMovieCartoonHorror(generics.ListAPIView):
 
 
 class FilmWorkListMovieCartoonFamily(generics.ListAPIView):
+    """
+    FilmWork list of new movie and cartoon of the family genre
+    """
+
     serializer_class = serializers.FilmWorkSerializer
 
     def get_queryset(self):
