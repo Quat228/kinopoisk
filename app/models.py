@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 
 from accounts.models import Profile
@@ -75,8 +74,8 @@ class Currency(models.Model):
 
 class Comment(models.Model):
     text = models.TextField()
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments')
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='comments')
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
