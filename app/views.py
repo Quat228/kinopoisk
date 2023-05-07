@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from rest_framework import generics
 from rest_framework import views
 from rest_framework.generics import get_object_or_404
@@ -74,3 +76,32 @@ class FilmWorkRetrieveUpdateDestroyAPIView(views.APIView):
     def delete(self, request, pk, *args, **kwargs):
         self.get_object(pk).delete()
         return Response(status=204)
+
+
+class FilmWorkListMovieCartoonNew(generics.ListAPIView):
+
+    serializer_class = serializers.FilmWorkSerializer
+
+    def get_queryset(self):
+        movies = models.FilmWork.objects.filter(type='movie').order_by('-premiere')[:7]
+        cartoons = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')[:7]
+        return movies | cartoons
+
+
+class FilmWorkListMovieCartoonHorror(generics.ListAPIView):
+
+    serializer_class = serializers.FilmWorkSerializer
+
+    def get_queryset(self):
+        movies = models.FilmWork.objects.filter(type='movie', genres__name='ужасы')[:7]
+        cartoons = models.FilmWork.objects.filter(type='cartoon', genres__name='ужасы')[:7]
+        return movies | cartoons
+
+
+class FilmWorkListMovieCartoonFamily(generics.ListAPIView):
+    serializer_class = serializers.FilmWorkSerializer
+
+    def get_queryset(self):
+        movies = models.FilmWork.objects.filter(type='movie', genres__name='семейный')[:7]
+        cartoons = models.FilmWork.objects.filter(type='cartoon', genres__name='семейный')[:7]
+        return movies | cartoons
