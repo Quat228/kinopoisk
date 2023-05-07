@@ -14,7 +14,7 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
-    short_info = models.CharField(null=True, blank=True)
+    short_info = models.TextField(null=True, blank=True)
     phone_number = models.CharField(max_length=13, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     favorites = models.ManyToManyField('app.FilmWork', related_name='profiles')
