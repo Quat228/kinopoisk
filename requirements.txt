@@ -1,7 +1,6 @@
 django==4.2
 djangorestframework
 django-cors-headers
-psycopg2
 Pillow
 requests
 drf-yasg
