@@ -10,7 +10,7 @@ from . import models
 from . import serializers
 
 
-class FilmWorkListCreateAPIView(generics.ListAPIView):
+class FilmWorkListAPIView(generics.ListAPIView):
     """
     FilmWork List and Create View
     :param limit: int
@@ -55,27 +55,13 @@ class CurrencyListAPIView(generics.ListAPIView):
     serializer_class = serializers.CurrencySerializer
 
 
-class FilmWorkRetrieveUpdateDestroyAPIView(views.APIView):
+class FilmWorkRetrieveAPIView(views.APIView):
     """
-    FilmWork Retrieve, Update and Destroy View
+    FilmWork Retrieve View
     """
-    def get_object(self, pk):
-        return get_object_or_404(models.FilmWork, pk=pk)
-
     def get(self, request, pk, *args, **kwargs):
-        serializer = serializers.FilmWorkSerializer(instance=self.get_object(pk))
+        serializer = serializers.FilmWorkSerializer(instance=get_object_or_404(models.FilmWork, pk=pk))
         return Response(serializer.data)
-
-    def put(self, request, pk, *args, **kwargs):
-        serializer = serializers.FilmWorkSerializer(instance=self.get_object(pk), data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
-
-    def delete(self, request, pk, *args, **kwargs):
-        self.get_object(pk).delete()
-        return Response(status=204)
 
 
 class FilmWorkListMovieCartoonNew(generics.ListAPIView):
