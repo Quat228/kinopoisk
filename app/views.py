@@ -5,7 +5,6 @@ from rest_framework import views
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-
 from . import models
 from . import serializers
 
@@ -62,6 +61,36 @@ class FilmWorkRetrieveAPIView(views.APIView):
     def get(self, request, pk, *args, **kwargs):
         serializer = serializers.FilmWorkSerializer(instance=get_object_or_404(models.FilmWork, pk=pk))
         return Response(serializer.data)
+
+
+class FilmWorkListNewMovieAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.filter(type='movie').order_by('-premiere')
+    serializer_class = serializers.FilmWorkSerializer
+
+
+class FilmWorkListFamilyMovieAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.filter(type='movie', genres__name__exact='Семейные')
+    serializer_class = serializers.FilmWorkSerializer
+
+
+class FilmWorkListHorrorMovieAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.filter(type='movie', genres__name__exact='Ужасы')
+    serializer_class = serializers.FilmWorkSerializer
+
+
+class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')
+    serializer_class = serializers.FilmWorkSerializer
+
+
+class FilmWorkListFamilyCartoonAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.filter(type='cartoon', genres__name__exact='Семейные')
+    serializer_class = serializers.FilmWorkSerializer
+
+
+class FilmWorkListHorrorCartoonAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.filter(type='cartoon', genres__name__exact='Ужасы')
+    serializer_class = serializers.FilmWorkSerializer
 
 
 class FilmWorkListMovieCartoonNew(generics.ListAPIView):
