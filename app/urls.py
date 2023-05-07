@@ -11,14 +11,14 @@ urlpatterns = [
     path('filmworks/family/', views.FilmWorkListMovieCartoonFamily.as_view()),
     
     path('filmworks/movie/new/', views.FilmWorkListNewMovieAPIView.as_view()),
-    path('filmworks/movie/horror/', views.FilmWorkListFamilyMovieAPIView.as_view()),
-    path('filmworks/movie/family/', views.FilmWorkListHorrorMovieAPIView.as_view()),
+    path('filmworks/movie/family/', views.FilmWorkListFamilyMovieAPIView.as_view()),
+    path('filmworks/movie/horror/', views.FilmWorkListHorrorMovieAPIView.as_view()),
 
     path('filmworks/cartoon/new/', views.FilmWorkListNewCartoonAPIView.as_view()),
-    path('filmworks/cartoon/horror/', views.FilmWorkListFamilyCartoonAPIView.as_view()),
-    path('filmworks/cartoon/family/', views.FilmWorkListHorrorCartoonAPIView.as_view()),
+    path('filmworks/cartoon/family/', views.FilmWorkListFamilyCartoonAPIView.as_view()),
+    path('filmworks/cartoon/horror/', views.FilmWorkListHorrorCartoonAPIView.as_view()),
     
-    path('filmworks/<int:pk>', views.FilmWorkRetrieveUpdateDestroyAPIView.as_view()),
+    path('filmworks/<int:pk>', views.FilmWorkRetrieveAPIView.as_view()),
 
 
     path('ratings/', views.RatingListAPIView.as_view()),
@@ -28,7 +28,4 @@ urlpatterns = [
     path('persons/', views.PersonListAPIView.as_view()),
 
     path('budgets/', views.CurrencyListAPIView.as_view()),
-
-
-    path('filmworks/<int:pk>', views.FilmWorkRetrieveUpdateDestroyAPIView.as_view()),
 ]
