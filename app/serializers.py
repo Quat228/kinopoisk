@@ -36,3 +36,18 @@ class FilmWorkSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.FilmWork
         fields = '__all__'
+
+
+class FilmWorkSerializerFirstSlider(serializers.ModelSerializer):
+    genres = GenreSerializer(many=True)
+
+    class Meta:
+        model = models.FilmWork
+        fields = [
+            'name',
+            'backdrop',
+            'slogan',
+            'genres',
+            'year',
+            'age_rating'
+        ]
