@@ -51,3 +51,12 @@ class FilmWorkSerializerFirstSlider(serializers.ModelSerializer):
             'year',
             'age_rating'
         ]
+
+
+class FilmWorkSerializerOtherSliders(serializers.ModelSerializer):
+    rating = serializers.ReadOnlyField(source='get_rating')
+
+    class Meta:
+        model = models.FilmWork
+        fields = ['poster', 'name', 'rating']
+
