@@ -60,24 +60,8 @@ class FilmWorkListNewMovieAPIView(generics.ListAPIView):
     """
     FilmWork List of new movies
     """
-    queryset = models.FilmWork.objects.filter(type='movie').order_by('-premiere')[:14]
-    serializer_class = serializers.FilmWorkSerializer
-
-
-class FilmWorkListFamilyMovieAPIView(generics.ListAPIView):
-    """
-    FilmWork list of movie of the family genre
-    """
-    queryset = models.FilmWork.objects.filter(type='movie', genres__name__exact='семейный')[:14]
-    serializer_class = serializers.FilmWorkSerializer
-
-
-class FilmWorkListHorrorMovieAPIView(generics.ListAPIView):
-    """
-    FilmWork list of movie of the horror genre
-    """
-    queryset = models.FilmWork.objects.filter(type='movie', genres__name__exact='ужасы')[:14]
-    serializer_class = serializers.FilmWorkSerializer
+    queryset = models.FilmWork.objects.filter(type='movie').order_by('-premiere')
+    serializer_class = serializers.FilmWorkSerializerFirstSlider
 
 
 class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
@@ -85,23 +69,7 @@ class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
     FilmWork list of new cartoon
     """
     queryset = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')[:14]
-    serializer_class = serializers.FilmWorkSerializer
-
-
-class FilmWorkListFamilyCartoonAPIView(generics.ListAPIView):
-    """
-    FilmWork list of cartoon of the family genre
-    """
-    queryset = models.FilmWork.objects.filter(type='cartoon', genres__name__exact='семейный')[:14]
-    serializer_class = serializers.FilmWorkSerializer
-
-
-class FilmWorkListHorrorCartoonAPIView(generics.ListAPIView):
-    """
-    FilmWork list of cartoon of the horror genre
-    """
-    queryset = models.FilmWork.objects.filter(type='cartoon', genres__name__exact='ужасы')[:14]
-    serializer_class = serializers.FilmWorkSerializer
+    serializer_class = serializers.FilmWorkSerializerFirstSlider
 
 
 class FilmWorkListMovieCartoonNew(generics.ListAPIView):
@@ -109,7 +77,7 @@ class FilmWorkListMovieCartoonNew(generics.ListAPIView):
     FilmWork list of new movie and cartoon
     """
 
-    serializer_class = serializers.FilmWorkSerializer
+    serializer_class = serializers.FilmWorkSerializerFirstSlider
 
     def get_queryset(self):
         movies = models.FilmWork.objects.filter(type='movie').order_by('-premiere')[:7]
@@ -122,7 +90,7 @@ class FilmWorkListMovieCartoonHorror(generics.ListAPIView):
     FilmWork list of movie and cartoon of the horror genre
     """
 
-    serializer_class = serializers.FilmWorkSerializer
+    serializer_class = serializers.FilmWorkSerializerOtherSliders
 
     def get_queryset(self):
         movies = models.FilmWork.objects.filter(type='movie', genres__name='ужасы')[:7]
@@ -135,7 +103,7 @@ class FilmWorkListMovieCartoonFamily(generics.ListAPIView):
     FilmWork list of new movie and cartoon of the family genre
     """
 
-    serializer_class = serializers.FilmWorkSerializer
+    serializer_class = serializers.FilmWorkSerializerOtherSliders
 
     def get_queryset(self):
         movies = models.FilmWork.objects.filter(type='movie', genres__name='семейный')[:7]
