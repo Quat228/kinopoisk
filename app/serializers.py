@@ -44,6 +44,7 @@ class FilmWorkSerializerFirstSlider(serializers.ModelSerializer):
     class Meta:
         model = models.FilmWork
         fields = [
+            'id',
             'name',
             'backdrop',
             'slogan',
@@ -58,5 +59,5 @@ class FilmWorkSerializerOtherSliders(serializers.ModelSerializer):
 
     class Meta:
         model = models.FilmWork
-        fields = ['poster', 'name', 'rating']
+        fields = ['id', 'poster', 'name', 'rating']
 
