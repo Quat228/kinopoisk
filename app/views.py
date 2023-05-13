@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework import views
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
 
 from accounts import serializers as acc_serializer
 
@@ -15,6 +16,7 @@ class FilmWorkListAPIView(generics.ListAPIView):
     """
     queryset = models.FilmWork.objects.all()
     serializer_class = serializers.FilmWorkSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class RatingListAPIView(generics.ListAPIView):
@@ -23,6 +25,7 @@ class RatingListAPIView(generics.ListAPIView):
     """
     queryset = models.Rating.objects.all()
     serializer_class = serializers.RatingSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class GenreListAPIView(generics.ListAPIView):
@@ -31,6 +34,7 @@ class GenreListAPIView(generics.ListAPIView):
     """
     queryset = models.Genre.objects.all()
     serializer_class = serializers.GenreSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class PersonListAPIView(generics.ListAPIView):
@@ -39,6 +43,7 @@ class PersonListAPIView(generics.ListAPIView):
     """
     queryset = models.Person.objects.all()
     serializer_class = serializers.PersonSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class CurrencyListAPIView(generics.ListAPIView):
@@ -47,6 +52,7 @@ class CurrencyListAPIView(generics.ListAPIView):
     """
     queryset = models.Currency.objects.all()
     serializer_class = serializers.CurrencySerializer
+    pagination_class = LimitOffsetPagination
 
 
 class FilmWorkRetrieveAPIView(views.APIView):
@@ -64,6 +70,7 @@ class FilmWorkListNewMovieAPIView(generics.ListAPIView):
     """
     queryset = models.FilmWork.objects.filter(type='movie').order_by('-premiere')
     serializer_class = serializers.FilmWorkFirstSliderSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
@@ -72,6 +79,7 @@ class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
     """
     queryset = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')[:14]
     serializer_class = serializers.FilmWorkFirstSliderSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class FilmWorkListMovieCartoonNew(generics.ListAPIView):
@@ -80,6 +88,7 @@ class FilmWorkListMovieCartoonNew(generics.ListAPIView):
     """
 
     serializer_class = serializers.FilmWorkFirstSliderSerializer
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         movies = models.FilmWork.objects.filter(type='movie').order_by('-premiere')[:7]
@@ -93,6 +102,7 @@ class FilmWorkListMovieCartoonHorror(generics.ListAPIView):
     """
 
     serializer_class = serializers.FilmWorkOtherSlidersSerializer
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         movies = models.FilmWork.objects.filter(type='movie', genres__name='ужасы')[:7]
@@ -106,6 +116,7 @@ class FilmWorkListMovieCartoonFamily(generics.ListAPIView):
     """
 
     serializer_class = serializers.FilmWorkOtherSlidersSerializer
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         movies = models.FilmWork.objects.filter(type='movie', genres__name='семейный')[:7]
@@ -118,7 +129,7 @@ class BrowsingHistoryCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.BrowsingHistorySerializer
 
     def perform_create(self, serializer):
-        serializer.save(profile=self.request.user.profile, film_work_id=self.request.kwargs['pk'])
+        serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['pk'])
 
 
 class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -130,5 +141,8 @@ class FavoritesAddAPIView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         models.Profile.favorites.add(models.FilmWork.objects.get(id=request.data['id']))
-        return Response(status=201)
+        return Response(status=200)
+
+
+
 

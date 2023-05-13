@@ -14,7 +14,9 @@ urlpatterns = [
 
     path('filmworks/cartoon/new/', views.FilmWorkListNewCartoonAPIView.as_view()),
 
-    path('filmworks/<int:pk>', views.FilmWorkRetrieveAPIView.as_view()),
+    path('filmworks/<int:pk>/', views.FilmWorkRetrieveAPIView.as_view()),
+    #path('filmworks/<int:pk>/dasdasdsa', views.FilmWorkRetrieveAPIView.as_view()), comments
+    path('filmworks/<int:pk>/history/', views.BrowsingHistoryCreateAPIView.as_view()),
 
 
     path('ratings/', views.RatingListAPIView.as_view()),

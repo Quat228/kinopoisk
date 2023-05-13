@@ -30,13 +30,17 @@ class FilmWork(models.Model):
 
         return sum(rates) / len(rates) if rates else 0.0
 
+    def get_rating_count(self):
+        queryset = self.ratings.all()
+        return sum(queryset)
+
     def __str__(self):
         return self.name
 
 
 class Rating(models.Model):
     film_work = models.ForeignKey("FilmWork", related_name='ratings', on_delete=models.CASCADE)
-    user = models.ForeignKey(Profile, related_name='ratings', on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, related_name='ratings', on_delete=models.CASCADE)
     rate = models.FloatField(choices=[
         (1, 1),
         (2, 2),
@@ -44,6 +48,9 @@ class Rating(models.Model):
         (4, 4),
         (5, 5)
     ])
+
+    class Meta:
+        unique_together = ['film_work', 'user']
 
     def __str__(self):
         return f"{self.film_work.name} | {self.rate} | {self.user}"
@@ -87,6 +94,9 @@ class BrowsingHistory(models.Model):
     film_work = models.ForeignKey(FilmWork, on_delete=models.PROTECT, related_name='browsing_histories')
     profile = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name='browsing_histories')
     watched_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['film_work', 'profile']
 
     def __str__(self):
         return f"{self.film_work} - {self.profile} | {self.watched_at}"
