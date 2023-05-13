@@ -10,7 +10,7 @@ class FilmWork(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     premiere = models.DateTimeField()
-    slogan = models.CharField(max_length=100,null=True)
+    slogan = models.CharField(max_length=100, null=True)
     year = models.IntegerField()
     budget = models.IntegerField(default=0)
     currency = models.ForeignKey("Currency", on_delete=models.CASCADE, related_name='film_works')
@@ -81,3 +81,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class BrowsingHistory(models.Model):
+    film_work = models.ForeignKey(FilmWork, on_delete=models.PROTECT, related_name='browsing_histories')
+    profile = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name='browsing_histories')
+    watched_at = models.DateTimeField(auto_now=True)
