@@ -38,7 +38,7 @@ class FilmWorkSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FilmWorkSerializerFirstSlider(serializers.ModelSerializer):
+class FilmWorkFirstSliderSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True)
 
     class Meta:
@@ -54,10 +54,16 @@ class FilmWorkSerializerFirstSlider(serializers.ModelSerializer):
         ]
 
 
-class FilmWorkSerializerOtherSliders(serializers.ModelSerializer):
+class FilmWorkOtherSlidersSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField(source='get_rating')
 
     class Meta:
         model = models.FilmWork
         fields = ['id', 'poster', 'name', 'rating']
 
+
+class BrowsingHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.BrowsingHistory
+        fields = '__all__'
+        read_only_fields = '__all__'

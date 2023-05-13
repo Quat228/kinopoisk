@@ -49,3 +49,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise e
         else:
             return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Profile
+        fields = '__all__'
+        read_only_fields = ['user', ]
