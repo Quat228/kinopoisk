@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
+
+from django.utils import timezone
 
 from . import models
 
@@ -66,4 +69,20 @@ class BrowsingHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.BrowsingHistory
         fields = '__all__'
-        read_only_fields = '__all__'
+        read_only_fields = ['film_work', 'profile', 'watched_at']
+
+    def create(self, validated_data):
+        print(validated_data)
+        try:
+            return super().create(validated_data)
+        except Exception as e:
+            history = models.BrowsingHistory.objects.filter(
+                film_work_id=validated_data['film_work_id'],
+                profile=validated_data['profile']
+            ).first()
+            history['watched_at'] = timezone.now()
+            history.save()
+            return history
+
+
+            
