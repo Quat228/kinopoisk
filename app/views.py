@@ -126,3 +126,9 @@ class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = acc_serializer.ProfileSerializer
 
 
+class FavoritesAddAPIView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        models.Profile.favorites.add(models.FilmWork.objects.get(id=request.data['id']))
+        return Response(status=201)
+

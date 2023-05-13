@@ -87,3 +87,6 @@ class BrowsingHistory(models.Model):
     film_work = models.ForeignKey(FilmWork, on_delete=models.PROTECT, related_name='browsing_histories')
     profile = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name='browsing_histories')
     watched_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.film_work} - {self.profile} | {self.watched_at}"
