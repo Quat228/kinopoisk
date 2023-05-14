@@ -1,5 +1,8 @@
+from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import generics
 from rest_framework import views
+from rest_framework import filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
@@ -17,6 +20,9 @@ class FilmWorkListAPIView(generics.ListAPIView):
     queryset = models.FilmWork.objects.all()
     serializer_class = serializers.FilmWorkSerializer
     pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['type', 'genres__name']
+    ordering_fields = ['premiere']
 
 
 class RatingListAPIView(generics.ListAPIView):
@@ -64,64 +70,32 @@ class FilmWorkRetrieveAPIView(views.APIView):
         return Response(serializer.data)
 
 
-class FilmWorkListNewMovieAPIView(generics.ListAPIView):
-    """
-    FilmWork List of new movies
-    """
-    queryset = models.FilmWork.objects.filter(type='movie').order_by('-premiere')
+class FilmWorkListFirstSlider(generics.ListAPIView):
     serializer_class = serializers.FilmWorkFirstSliderSerializer
     pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['type', 'genres__name']
+    ordering_fields = ['premiere']
 
 
-class FilmWorkListNewCartoonAPIView(generics.ListAPIView):
-    """
-    FilmWork list of new cartoon
-    """
-    queryset = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')[:14]
-    serializer_class = serializers.FilmWorkFirstSliderSerializer
-    pagination_class = LimitOffsetPagination
-
-
-class FilmWorkListMovieCartoonNew(generics.ListAPIView):
-    """
-    FilmWork list of new movie and cartoon
-    """
-
-    serializer_class = serializers.FilmWorkFirstSliderSerializer
-    pagination_class = LimitOffsetPagination
-
-    def get_queryset(self):
-        movies = models.FilmWork.objects.filter(type='movie').order_by('-premiere')[:7]
-        cartoons = models.FilmWork.objects.filter(type='cartoon').order_by('-premiere')[:7]
-        return movies | cartoons
-
-
-class FilmWorkListMovieCartoonHorror(generics.ListAPIView):
-    """
-    FilmWork list of movie and cartoon of the horror genre
-    """
-
+class FilmWorkListOtherSlider(generics.ListAPIView):
     serializer_class = serializers.FilmWorkOtherSlidersSerializer
     pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['type', 'genres__name']
+    ordering_fields = ['premiere']
 
     def get_queryset(self):
-        movies = models.FilmWork.objects.filter(type='movie', genres__name='ужасы')[:7]
-        cartoons = models.FilmWork.objects.filter(type='cartoon', genres__name='ужасы')[:7]
-        return movies | cartoons
+        query_set = models.FilmWork.objects.filter(type=self.kwargs['type'])
+        return query_set
 
 
-class FilmWorkListMovieCartoonFamily(generics.ListAPIView):
-    """
-    FilmWork list of new movie and cartoon of the family genre
-    """
-
-    serializer_class = serializers.FilmWorkOtherSlidersSerializer
+class FilmWorkSearchAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.all()
+    serializer_class = serializers.FilmWorkSerializer
     pagination_class = LimitOffsetPagination
-
-    def get_queryset(self):
-        movies = models.FilmWork.objects.filter(type='movie', genres__name='семейный')[:7]
-        cartoons = models.FilmWork.objects.filter(type='cartoon', genres__name='семейный')[:7]
-        return movies | cartoons
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 
 class BrowsingHistoryCreateAPIView(generics.CreateAPIView):

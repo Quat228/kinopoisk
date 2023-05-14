@@ -5,17 +5,11 @@ from . import views
 
 urlpatterns = [
     path('filmworks/', views.FilmWorkListAPIView.as_view()),
-    
-    path('filmworks/new/', views.FilmWorkListMovieCartoonNew.as_view()),
-    path('filmworks/horror/', views.FilmWorkListMovieCartoonHorror.as_view()),
-    path('filmworks/family/', views.FilmWorkListMovieCartoonFamily.as_view()),
-    
-    path('filmworks/movie/new/', views.FilmWorkListNewMovieAPIView.as_view()),
-
-    path('filmworks/cartoon/new/', views.FilmWorkListNewCartoonAPIView.as_view()),
+    path('filmworks/firstslider/', views.FilmWorkListFirstSlider.as_view()),
+    path('filmworks/otherslider/', views.FilmWorkListOtherSlider.as_view()),
+    path('filmworks/search/', views.FilmWorkSearchAPIView.as_view()),
 
     path('filmworks/<int:pk>/', views.FilmWorkRetrieveAPIView.as_view()),
-    #path('filmworks/<int:pk>/dasdasdsa', views.FilmWorkRetrieveAPIView.as_view()), comments
     path('filmworks/<int:pk>/history/', views.BrowsingHistoryCreateAPIView.as_view()),
 
 

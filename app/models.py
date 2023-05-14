@@ -50,10 +50,10 @@ class Rating(models.Model):
     ])
 
     class Meta:
-        unique_together = ['film_work', 'user']
+        unique_together = ['film_work', 'profile']
 
     def __str__(self):
-        return f"{self.film_work.name} | {self.rate} | {self.user}"
+        return f"{self.film_work.name} | {self.rate} | {self.profile}"
 
 
 class Genre(models.Model):
