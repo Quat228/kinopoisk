@@ -9,4 +9,5 @@ urlpatterns = [
     path('register/', views.UserRegisterAPIView.as_view()),
     path('token/', obtain_auth_token),
     path('auth/', include('rest_framework.urls')),
+    path('profile/<int:pk>/', views.ProfileRetrieveUpdateAPIView.as_view()),
 ]

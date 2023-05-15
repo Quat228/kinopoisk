@@ -7,8 +7,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 
-from accounts import serializers as acc_serializer
-
 from . import models
 from . import serializers
 
@@ -71,23 +69,21 @@ class FilmWorkRetrieveAPIView(views.APIView):
 
 
 class FilmWorkListFirstSlider(generics.ListAPIView):
+    queryset = models.FilmWork.objects.all()
     serializer_class = serializers.FilmWorkFirstSliderSerializer
     pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['type', 'genres__name']
-    ordering_fields = ['premiere']
+    filterset_fields = ['type', ]
+    ordering_fields = ['premiere', ]
 
 
 class FilmWorkListOtherSlider(generics.ListAPIView):
+    queryset = models.FilmWork.objects.all()
     serializer_class = serializers.FilmWorkOtherSlidersSerializer
     pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['type', 'genres__name']
-    ordering_fields = ['premiere']
-
-    def get_queryset(self):
-        query_set = models.FilmWork.objects.filter(type=self.kwargs['type'])
-        return query_set
+    ordering_fields = ['premiere', ]
 
 
 class FilmWorkSearchAPIView(generics.ListAPIView):
@@ -95,7 +91,7 @@ class FilmWorkSearchAPIView(generics.ListAPIView):
     serializer_class = serializers.FilmWorkSerializer
     pagination_class = LimitOffsetPagination
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+    search_fields = ['name', ]
 
 
 class BrowsingHistoryCreateAPIView(generics.CreateAPIView):
@@ -103,19 +99,16 @@ class BrowsingHistoryCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.BrowsingHistorySerializer
 
     def perform_create(self, serializer):
-        serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['pk'])
-
-
-class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
-    queryset = models.Profile.objects.all()
-    serializer_class = acc_serializer.ProfileSerializer
+        profile = get_object_or_404(models.Profile, user=self.request.user)
+        serializer.save(profile=profile, film_work_id=self.kwargs['pk'])
 
 
 class FavoritesAddAPIView(views.APIView):
 
     def post(self, request, *args, **kwargs):
-        models.Profile.favorites.add(models.FilmWork.objects.get(id=request.data['id']))
-        return Response(status=200)
+        serializer = serializers.FilmWorkSerializer(data=request.data)
+        models.Profile.favorites.add(models.FilmWork.objects.get(id=serializer.data['id']))
+        return Response(serializer.data, status=200)
 
 
 

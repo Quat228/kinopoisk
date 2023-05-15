@@ -51,8 +51,26 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             return user
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = '__all__'
+
+
 class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if request and request.user == instance.user:
+            user = UserSerializer(instance.user).data
+            representation['user'] = user
+        else:
+            representation.pop('user', None)
+        return representation
+
     class Meta:
         model = models.Profile
         fields = '__all__'
-        read_only_fields = ['user', ]
+
