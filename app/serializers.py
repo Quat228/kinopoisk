@@ -80,9 +80,6 @@ class BrowsingHistorySerializer(serializers.ModelSerializer):
                 film_work_id=validated_data['film_work_id'],
                 profile=validated_data['profile']
             ).first()
-            history['watched_at'] = timezone.now()
+            history.watched_at = timezone.now()
             history.save()
             return history
-
-
-            
