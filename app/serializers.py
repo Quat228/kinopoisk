@@ -83,3 +83,10 @@ class BrowsingHistorySerializer(serializers.ModelSerializer):
             history.watched_at = timezone.now()
             history.save()
             return history
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Comment
+        fields = '__all__'
+        read_only_fields = ['profile', 'film_work']

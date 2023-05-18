@@ -6,9 +6,11 @@ from rest_framework import filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 
 from . import models
 from . import serializers
+from . import permissions
 
 
 class FilmWorkListAPIView(generics.ListAPIView):
@@ -111,5 +113,25 @@ class FavoritesAddAPIView(views.APIView):
         return Response(serializer.data, status=200)
 
 
+class CommentListCreateAPIView(generics.ListCreateAPIView):
+    queryset = models.Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [permissions.IsAuthorOrIsAuthenticated]
+    pagination_class = LimitOffsetPagination
 
+    def get_queryset(self):
+        return super().get_queryset().filter(film_work_id=self.kwargs['film_work_id'])
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['film_work_id'])
+
+
+class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [permissions.ReadOnlyOrIsAuthor]
+    lookup_field = 'film_work_id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(id=self.kwargs['comment_id'])
 
