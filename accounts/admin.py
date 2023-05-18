@@ -3,5 +3,11 @@ from django.contrib import admin
 from . import models
 
 
-admin.site.register(models.User)
-admin.site.register(models.Profile)
+@admin.register(models.User)
+class UserAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(models.Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    pass
