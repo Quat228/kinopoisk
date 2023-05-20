@@ -106,11 +106,16 @@ class BrowsingHistoryCreateAPIView(generics.CreateAPIView):
 
 
 class FavoritesAddAPIView(views.APIView):
+    permission_classes = [IsAuthenticated, ]
 
     def post(self, request, *args, **kwargs):
-        serializer = serializers.FilmWorkSerializer(data=request.data)
-        models.Profile.favorites.add(models.FilmWork.objects.get(id=serializer.data['id']))
-        return Response(serializer.data, status=200)
+        profile = get_object_or_404(models.Profile, user=self.request.user)
+        film_work = get_object_or_404(models.FilmWork, id=request.data['id'])
+        if film_work in profile.favorites.all():
+            profile.favorites.remove(film_work)
+        else:
+            profile.favorites.add(film_work)
+        return Response(request.data, status=200)
 
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
