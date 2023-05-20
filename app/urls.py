@@ -13,7 +13,7 @@ urlpatterns = [
     path('filmworks/<int:pk>/history/', views.BrowsingHistoryCreateAPIView.as_view()),
 
     path('filmworks/<int:film_work_id>/comment/', views.CommentListCreateAPIView.as_view()),
-    path('filmworks/<int:film_work_id>/comment/<int:comment_id>', views.CommentRetrieveUpdateDestroyAPIView.as_view()),
+    path('filmworks/<int:film_work_id>/comment/<int:pk>', views.CommentRetrieveUpdateDestroyAPIView.as_view()),
 
     # path('add/favorite', views.FavoritesAddAPIView.as_view()),
 

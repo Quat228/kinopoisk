@@ -130,8 +130,7 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = models.Comment.objects.all()
     serializer_class = serializers.CommentSerializer
     permission_classes = [permissions.ReadOnlyOrIsAuthor]
-    lookup_field = 'film_work_id'
 
     def get_queryset(self):
-        return super().get_queryset().filter(id=self.kwargs['comment_id'])
+        return super().get_queryset().filter(film_work_id=self.kwargs['film_work_id'])
 
