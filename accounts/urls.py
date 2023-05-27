@@ -10,4 +10,5 @@ urlpatterns = [
     path('token/', obtain_auth_token),
     path('auth/', include('rest_framework.urls')),
     path('profile/<int:pk>/', views.ProfileRetrieveUpdateAPIView.as_view()),
+    path('profile/cabinet/', views.ProfileCabinetApiView.as_view()),
 ]

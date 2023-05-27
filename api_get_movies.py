@@ -7,7 +7,7 @@ from app import models
 received_data_json = requests.get('https://api.kinopoisk.dev/v1.3/movie?selectFields=backdrop%20movieLength'
                                   '%20type%20name%20description%20premiere.world%20slogan%20year%20budget'
                                   '%20poster%20genres%20videos.trailers%20persons%20ageRating'
-                                  '&year=1990-2030&poster.url=%21null&backdrop.url=%21null'
+                                  '&year=1990-2030&page=2&limit=15&poster.url=%21null&backdrop.url=%21null'
                                   '&videos.trailers.site=youtube&videos.trailers.type=TRAILER&budget.value='
                                   '%21null&budget.currency=%21null',
                                   headers={

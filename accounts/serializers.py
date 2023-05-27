@@ -59,6 +59,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    # username = serializers.CharField()
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -139,3 +139,11 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     def get_queryset(self):
         return super().get_queryset().filter(film_work_id=self.kwargs['film_work_id'])
 
+
+class RatingCreateAPIView(generics.CreateAPIView):
+    queryset = models.Rating
+    serializer_class = serializers.RatingSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['film_work_id'])
