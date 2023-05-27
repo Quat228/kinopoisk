@@ -2,14 +2,28 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from django.utils import timezone
+from django.db.utils import IntegrityError
 
 from . import models
+from accounts.serializers import ProfileSerializer
 
 
 class RatingSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Rating
         fields = '__all__'
+        read_only_fields = ['film_work', 'profile']
+
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except IntegrityError:
+            new_rate = validated_data.pop('rate')
+            instance = self.Meta.model.objects.get(**validated_data)
+            instance.rate = new_rate
+            instance.save()
+            return instance
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -86,6 +100,8 @@ class BrowsingHistorySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    # profile = ProfileSerializer()
+
     class Meta:
         model = models.Comment
         fields = '__all__'

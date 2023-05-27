@@ -6,3 +6,4 @@ requests
 drf-yasg
 django-environ
 django-filter
+psycopg2
