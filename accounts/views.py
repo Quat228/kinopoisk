@@ -29,3 +29,6 @@ class ProfileCabinetApiView(generics.RetrieveUpdateDestroyAPIView):
         obj = get_object_or_404(queryset, id=self.request.user.profile.id)
         self.check_object_permissions(self.request, obj)
         return obj
+
+    def perform_destroy(self, instance):
+        instance.user.delete()

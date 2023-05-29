@@ -66,7 +66,9 @@ class FilmWorkRetrieveAPIView(views.APIView):
     FilmWork Retrieve View
     """
     def get(self, request, pk, *args, **kwargs):
-        serializer = serializers.FilmWorkSerializer(instance=get_object_or_404(models.FilmWork, pk=pk))
+        serializer = serializers.FilmWorkSerializer(
+            instance=get_object_or_404(models.FilmWork, pk=pk),
+            context={'request': request})
         return Response(serializer.data)
 
 
@@ -94,6 +96,36 @@ class FilmWorkSearchAPIView(generics.ListAPIView):
     pagination_class = LimitOffsetPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]
+
+
+class FilmWorkPopularListAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.all()
+    serializer_class = serializers.FilmWorkSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        sorted_queryset = sorted(super().get_queryset(), key=lambda filmwork: filmwork.get_views_count(), reverse=True)
+        return sorted_queryset
+
+
+class FilmWorkRecommendListAPIView(generics.ListAPIView):
+    queryset = models.FilmWork.objects.all()
+    serializer_class = serializers.FilmWorkSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        sorted_queryset = sorted(super().get_queryset(), key=lambda filmwork: filmwork.get_rating(), reverse=True)
+        try:
+            profile = get_object_or_404(models.Profile, user=self.request.user)
+        except Exception as e:
+            pass
+        else:
+            watched_genres_obj = \
+                [history.film_work.genres.all().first() for history in profile.browsing_histories.all()]
+            if watched_genres_obj:
+                sorted_queryset = super().get_queryset().filter(genres__in=watched_genres_obj)
+        finally:
+            return sorted_queryset
 
 
 class BrowsingHistoryCreateAPIView(generics.CreateAPIView):
@@ -128,7 +160,8 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
         return super().get_queryset().filter(film_work_id=self.kwargs['film_work_id'])
 
     def perform_create(self, serializer):
-        serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['film_work_id'])
+        profile = get_object_or_404(models.Profile, user=self.request.user)
+        serializer.save(profile=profile, film_work_id=self.kwargs['film_work_id'])
 
 
 class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -146,4 +179,5 @@ class RatingCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, ]
 
     def perform_create(self, serializer):
-        serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['film_work_id'])
+        profile = get_object_or_404(models.Profile, user=self.request.user)
+        serializer.save(profile=profile, film_work_id=self.kwargs['film_work_id'])
