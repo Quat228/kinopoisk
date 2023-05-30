@@ -70,8 +70,8 @@ class ProfileSerializer(serializers.ModelSerializer):
             representation['user'] = user
         else:
             representation.pop('user', None)
-            representation['username'] = request.user.username
-            profile_image = str(request.user.profile_image)
+            representation['username'] = instance.user.username
+            profile_image = str(instance.user.profile_image)
             representation['profile_image'] = request.build_absolute_uri(settings.MEDIA_URL + profile_image)
         return representation
 
