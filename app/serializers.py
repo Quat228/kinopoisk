@@ -131,7 +131,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = models.Comment
         fields = '__all__'
         read_only_fields = ['profile', 'film_work']
-        
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         profile = Profile.objects.get(id=representation['profile'])
