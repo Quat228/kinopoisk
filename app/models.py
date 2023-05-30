@@ -34,6 +34,17 @@ class FilmWork(models.Model):
         queryset = self.ratings.all()
         return sum(queryset)
 
+    def get_reaction(self):
+        reactions = self.reactions.all()
+        result = {}
+        for reaction in reactions:
+            if result.get(reaction.reaction.name):
+                result[reaction.reaction.name] += 1
+            else:
+                result[reaction.reaction.name] = 1
+
+        return result
+
     def __str__(self):
         return self.name
 
@@ -86,6 +97,17 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
+    def get_reaction(self):
+        reactions = self.comment_reactions.all()
+        result = {}
+        for reaction in reactions:
+            if result.get(reaction.reaction.name):
+                result[reaction.reaction.name] += 1
+            else:
+                result[reaction.reaction.name] = 1
+
+        return result
+
     def __str__(self):
         return self.text
 
@@ -100,3 +122,35 @@ class BrowsingHistory(models.Model):
 
     def __str__(self):
         return f"{self.film_work} - {self.profile} | {self.watched_at}"
+
+
+class ReactionType(models.Model):
+    id = models.SmallIntegerField(primary_key=True)
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+
+class FilmWorkReaction(models.Model):
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='reactions')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    reaction = models.ForeignKey(ReactionType, on_delete=models.SET_DEFAULT, default=1)
+
+    def __str__(self):
+        return f'{self.film_work} - {self.profile} - {self.reaction}'
+
+    class Meta:
+        unique_together = ['film_work', 'profile']
+
+
+class CommentReaction(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_reactions')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    reaction = models.ForeignKey(ReactionType, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.comment
+
+    class Meta:
+        unique_together = ['profile', 'comment']

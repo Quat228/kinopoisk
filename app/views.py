@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import generics
@@ -79,12 +80,12 @@ class FilmWorkListFirstSlider(generics.ListAPIView):
     ordering_fields = ['premiere', ]
 
 
-class FilmWorkListOtherSlider(generics.ListAPIView):
+class FilmWorkFilterListAPIView(generics.ListAPIView):
     queryset = models.FilmWork.objects.all()
-    serializer_class = serializers.FilmWorkOtherSlidersSerializer
+    serializer_class = serializers.FilmWorkFilterSerializer
     pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['type', 'genres__name']
+    filterset_fields = ['type', 'genres__name', 'year']
     ordering_fields = ['premiere', ]
 
 
@@ -147,3 +148,27 @@ class RatingCreateAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user.profile, film_work_id=self.kwargs['film_work_id'])
+
+
+class FilmWorkReactionCreateAPIView(generics.CreateAPIView):
+    queryset = models.FilmWorkReaction.objects.all()
+    serializer_class = serializers.FilmWorkReactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(
+            film_work=get_object_or_404(models.Comment, pk=self.kwargs['film_work_id']),
+            profile=self.request.user.profile
+        )
+
+
+class CommentReactionCreateAPIView(generics.CreateAPIView):
+    queryset = models.CommentReaction.objects.all()
+    serializer_class = serializers.CommentReactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(
+            comment=get_object_or_404(models.Comment, pk=self.kwargs['comment_id']),
+            profile=self.request.user.profile
+        )
