@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.mail import send_mail
 
 from rest_framework import serializers
 
@@ -10,7 +11,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ['username', 'password', 'password_check', 'profile_image']
+        fields = ['username', 'email', 'password', 'password_check', 'profile_image']
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -35,7 +36,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = models.User(
-            username=validated_data['username']
+            username=validated_data['username'],
+            email=validated_data['email']
         )
         profile_image = validated_data.get('profile_image')
         if profile_image:
@@ -50,6 +52,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             user.delete()
             raise e
         else:
+            send_mail(
+                "Создание аккаунта",
+                f'Поздравляю, вы успешно зарегестрировали аккаунт "{user.username}"',
+                settings.EMAIL_HOST_USER,
+                [self.validated_data['email']],
+                fail_silently=False,
+            )
             return user
 
 
