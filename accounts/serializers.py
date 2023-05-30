@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.mail import send_mail
+
 from rest_framework import serializers
 
 from . import models
@@ -69,7 +70,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    # username = serializers.CharField()
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -79,6 +79,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             representation['user'] = user
         else:
             representation.pop('user', None)
+            representation['username'] = instance.user.username
+            profile_image = str(instance.user.profile_image)
+            representation['profile_image'] = request.build_absolute_uri(settings.MEDIA_URL + profile_image)
         return representation
 
     class Meta:

@@ -13,7 +13,7 @@ class FilmWork(models.Model):
     slogan = models.CharField(max_length=100, null=True)
     year = models.IntegerField()
     budget = models.IntegerField(default=0)
-    currency = models.ForeignKey("Currency", on_delete=models.CASCADE, related_name='film_works')
+    currency = models.ForeignKey("Currency", on_delete=models.SET_NULL, related_name='film_works', null=True)
     poster = models.URLField()
     genres = models.ManyToManyField("Genre", related_name='film_works')
     trailer_url = models.URLField()
@@ -32,7 +32,11 @@ class FilmWork(models.Model):
 
     def get_rating_count(self):
         queryset = self.ratings.all()
-        return sum(queryset)
+        return len(queryset)
+
+    def get_views_count(self):
+        queryset = self.browsing_histories.all()
+        return len(queryset)
 
     def get_reaction(self):
         reactions = self.reactions.all()
@@ -113,8 +117,8 @@ class Comment(models.Model):
 
 
 class BrowsingHistory(models.Model):
-    film_work = models.ForeignKey(FilmWork, on_delete=models.PROTECT, related_name='browsing_histories')
-    profile = models.ForeignKey(Profile, on_delete=models.PROTECT, related_name='browsing_histories')
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE, related_name='browsing_histories')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='browsing_histories')
     watched_at = models.DateTimeField(auto_now=True)
 
     class Meta:

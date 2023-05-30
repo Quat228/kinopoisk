@@ -6,6 +6,18 @@ from django.db.utils import IntegrityError
 
 from . import models
 from accounts.serializers import ProfileSerializer
+from accounts.models import User, Profile
+
+
+def is_favorite_add(function):
+    def wrap(self, instance):
+        representation = function(self, instance)
+        request = self.context.get('request')
+        representation['is_favorite'] = False
+        if not request.user.is_anonymous:
+            representation['is_favorite'] = request.user.profile in instance.profiles.all()
+        return representation
+    return wrap
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -46,6 +58,8 @@ class CurrencySerializer(serializers.ModelSerializer):
 class FilmWorkSerializer(serializers.ModelSerializer):
     reaction = serializers.ReadOnlyField(source='get_reaction')
     rating = serializers.ReadOnlyField(source='get_rating')
+    rating_count = serializers.ReadOnlyField(source='get_rating_count')
+    views_count = serializers.ReadOnlyField(source='get_views_count')
     genres = GenreSerializer(many=True)
     persons = PersonSerializer(many=True)
     currency = CurrencySerializer()
@@ -53,6 +67,10 @@ class FilmWorkSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.FilmWork
         fields = '__all__'
+
+    @is_favorite_add
+    def to_representation(self, instance):
+        return super().to_representation(instance)
 
 
 class FilmWorkFirstSliderSerializer(serializers.ModelSerializer):
@@ -70,6 +88,10 @@ class FilmWorkFirstSliderSerializer(serializers.ModelSerializer):
             'age_rating'
         ]
 
+    @is_favorite_add
+    def to_representation(self, instance):
+        return super().to_representation(instance)
+
 
 class FilmWorkFilterSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField(source='get_rating')
@@ -77,6 +99,10 @@ class FilmWorkFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.FilmWork
         fields = ['id', 'poster', 'name', 'rating']
+
+    @is_favorite_add
+    def to_representation(self, instance):
+        return super().to_representation(instance)
 
 
 class BrowsingHistorySerializer(serializers.ModelSerializer):
@@ -86,7 +112,6 @@ class BrowsingHistorySerializer(serializers.ModelSerializer):
         read_only_fields = ['film_work', 'profile', 'watched_at']
 
     def create(self, validated_data):
-        print(validated_data)
         try:
             return super().create(validated_data)
         except Exception as e:
@@ -106,8 +131,15 @@ class CommentSerializer(serializers.ModelSerializer):
         model = models.Comment
         fields = '__all__'
         read_only_fields = ['profile', 'film_work']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        profile = Profile.objects.get(id=representation['profile'])
+        username = profile.user.username
+        representation['username'] = username
+        return representation
 
-
+      
 class ReactionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ReactionType

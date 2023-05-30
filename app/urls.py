@@ -18,6 +18,8 @@ urlpatterns = [
     path('filmworks/<int:film_work_id>/comment/<int:comment_id>/reaction', views.CommentReactionCreateAPIView.as_view()),
 
     path('filmworks/<int:film_work_id>/rating/', views.RatingCreateAPIView.as_view()),
+    path('filmworks/popular/', views.FilmWorkPopularListAPIView.as_view()),
+    path('filmworks/recommend/', views.FilmWorkRecommendListAPIView.as_view()),
 
     path('add/favorite/', views.FavoritesAddAPIView.as_view()),
 
