@@ -190,9 +190,10 @@ class FilmWorkReactionCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        profile = get_object_or_404(models.Profile, user=self.request.user)
         serializer.save(
             film_work=get_object_or_404(models.Comment, pk=self.kwargs['film_work_id']),
-            profile=self.request.user.profile
+            profile=profile
         )
 
 
@@ -202,7 +203,8 @@ class CommentReactionCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        profile = get_object_or_404(models.Profile, user=self.request.user)
         serializer.save(
             comment=get_object_or_404(models.Comment, pk=self.kwargs['comment_id']),
-            profile=self.request.user.profile
+            profile=profile
         )
