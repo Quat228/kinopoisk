@@ -21,7 +21,6 @@ def is_favorite_add(function):
 
 
 class RatingSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Rating
         fields = '__all__'
@@ -57,6 +56,7 @@ class CurrencySerializer(serializers.ModelSerializer):
 
 
 class FilmWorkSerializer(serializers.ModelSerializer):
+    reaction = serializers.ReadOnlyField(source='get_reaction')
     rating = serializers.ReadOnlyField(source='get_rating')
     rating_count = serializers.ReadOnlyField(source='get_rating_count')
     views_count = serializers.ReadOnlyField(source='get_views_count')
@@ -93,7 +93,7 @@ class FilmWorkFirstSliderSerializer(serializers.ModelSerializer):
         return super().to_representation(instance)
 
 
-class FilmWorkOtherSlidersSerializer(serializers.ModelSerializer):
+class FilmWorkFilterSerializer(serializers.ModelSerializer):
     rating = serializers.ReadOnlyField(source='get_rating')
 
     class Meta:
@@ -125,7 +125,7 @@ class BrowsingHistorySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    # profile = ProfileSerializer()
+    reaction = serializers.ReadOnlyField(source='get_reaction')
 
     class Meta:
         model = models.Comment
@@ -138,3 +138,43 @@ class CommentSerializer(serializers.ModelSerializer):
         username = profile.user.username
         representation['username'] = username
         return representation
+
+      
+class ReactionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ReactionType
+        fields = "__all__"
+
+
+class FilmWorkReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.FilmWorkReaction
+        fields = "__all__"
+        read_only_fields = ['profile', 'film_work']
+
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except IntegrityError:
+            new_reaction_type = validated_data.pop('reaction')
+            instance = self.Meta.model.objects.get(**validated_data)
+            instance.reaction = new_reaction_type
+            instance.save()
+            return instance
+
+
+class CommentReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CommentReaction
+        fields = "__all__"
+        read_only_fields = ['profile', 'comment']
+
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except IntegrityError:
+            new_reaction_type = validated_data.pop('reaction')
+            instance = self.Meta.model.objects.get(**validated_data)
+            instance.reaction = new_reaction_type
+            instance.save()
+            return instance
