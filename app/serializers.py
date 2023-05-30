@@ -14,8 +14,14 @@ def is_favorite_add(function):
         representation = function(self, instance)
         request = self.context.get('request')
         representation['is_favorite'] = False
-        if not request.user.is_anonymous:
-            representation['is_favorite'] = request.user.profile in instance.profiles.all()
+        profile = None
+        try:
+            profile = get_object_or_404(models.Profile, user=request.user)
+        except Exception as e:
+            pass
+
+        if not request.user.is_anonymous and profile:
+            representation['is_favorite'] = profile in instance.profiles.all()
         return representation
     return wrap
 
