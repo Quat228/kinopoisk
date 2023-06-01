@@ -8,6 +8,7 @@ def profile_image_store(instance, filename):
 
 class User(AbstractUser):
     profile_image = models.ImageField(upload_to=profile_image_store, default='profile/default.jpg')
+    email = models.EmailField("email address", blank=True, unique=True, null=True)
 
     def __str__(self):
         return self.username
