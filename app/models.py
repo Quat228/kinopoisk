@@ -158,3 +158,5 @@ class CommentReaction(models.Model):
 
     class Meta:
         unique_together = ['profile', 'comment']
+
+

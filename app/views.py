@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import generics
 from rest_framework import views
+from rest_framework import viewsets
 from rest_framework import filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -208,3 +209,4 @@ class CommentReactionCreateAPIView(generics.CreateAPIView):
             comment=get_object_or_404(models.Comment, pk=self.kwargs['comment_id']),
             profile=profile
         )
+
